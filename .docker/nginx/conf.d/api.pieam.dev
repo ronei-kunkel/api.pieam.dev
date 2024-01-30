@@ -1,0 +1,30 @@
+server {
+
+    listen 80;
+
+    server_name api.pieam.dev;
+    root /api.pieam.dev/public;
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass api.pieam.dev:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    access_log  /var/log/nginx/api.pieam.dev.access.log main;
+}
