@@ -1,0 +1,57 @@
+version: '3'
+
+networks:
+
+  internal:
+    driver: bridge
+
+services:
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./.docker/logs/nginx:/var/log/nginx
+    networks:
+      - internal
+    depends_on:
+      - api.pieam.dev
+
+  api.pieam.dev:
+    image: roneikunkel/api.pieam.dev:latest
+    container_name: api.pieam.dev
+    restart: always
+    volumes:
+      - ./:/api.pieam.dev
+    networks:
+      - internal
+    depends_on:
+      - cache
+      - mysql
+
+  cache:
+    image: redis:alpine
+    container_name: cache
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - internal
+
+  mysql:
+    image: mariadb:lts
+    container_name: mysql
+    restart: always
+    volumes:
+      - ./.docker/mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - internal
