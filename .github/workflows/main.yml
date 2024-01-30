@@ -1,0 +1,31 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Auth on docker hub
+        uses: docker/login-action@v3.0.0
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+
+      - name: Build and push docker image
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: |
+            roneikunkel/api.pieam.dev:latest
+
+  # CD:
+  #   runs-on: ubuntu-latest
+  #   needs: [CI]
