@@ -10,4 +10,4 @@ RUN chmod 777 -R storage
 
 EXPOSE 9000
 
-CMD sh -c "composer install -no-dev && php artisan migrate && php-fpm"
+CMD sh -c "composer install --no-dev && php artisan migrate && php-fpm"
