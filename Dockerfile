@@ -8,6 +8,4 @@ WORKDIR /api.pieam.dev
 RUN chmod 777 -R bootstrap/cache
 RUN chmod 777 -R storage
 
-EXPOSE 9000
-
 CMD sh -c "composer install --no-dev && php artisan migrate && php-fpm"
