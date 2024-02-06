@@ -1,4 +1,4 @@
-FROM roneikunkel/php82-fpm-alpine
+FROM roneikunkel/php82-fpm-alpine:latest
 
 COPY . /api.pieam.dev
 COPY ./.docker/local.ini /usr/local/etc/php/local.ini
