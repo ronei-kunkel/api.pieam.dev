@@ -2,7 +2,7 @@
 
 namespace Api\Auth\App;
 
-use Api\Auth\Domain\User;
+use Api\Auth\Domain\Entity\User;
 
 final readonly class GrantAccessOutput
 {

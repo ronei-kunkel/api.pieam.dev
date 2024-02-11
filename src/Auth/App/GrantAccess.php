@@ -3,8 +3,8 @@
 namespace Api\Auth\App;
 
 use Api\Auth\App\Service\DataChangeCheckerService;
-use Api\Auth\Domain\User;
-use Api\Auth\Infra\UserRepository;
+use Api\Auth\Domain\Entity\User;
+use Api\Auth\Infra\Repository\UserRepository;
 
 final class GrantAccess
 {

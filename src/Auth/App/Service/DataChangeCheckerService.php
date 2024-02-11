@@ -2,7 +2,7 @@
 
 namespace Api\Auth\App\Service;
 use Api\Auth\App\GrantAccessInput;
-use Api\Auth\Domain\User;
+use Api\Auth\Domain\Entity\User;
 
 final class DataChangeCheckerService
 {

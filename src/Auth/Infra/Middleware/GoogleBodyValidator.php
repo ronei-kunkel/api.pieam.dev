@@ -3,7 +3,7 @@
 namespace Api\Auth\Infra\Middleware;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 
 final class GoogleBodyValidator
@@ -11,13 +11,12 @@ final class GoogleBodyValidator
   /**
    * Handle an incoming request.
    *
-   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\JsonResponse)  $next
    */
-  public function handle(Request $request, \Closure $next): Response
+  public function handle(Request $request, \Closure $next): JsonResponse
   {
     $validator = Validator::make($request->all(), [
-      'credential' => ['required','string','regex:/^[\w-]+?\.[\w-]+?\.([\w-]+)?$/'],
-      'g_csrf_token' => ['required', 'string'],
+      'credential' => ['required','string','regex:/^[\w-]+?\.[\w-]+?\.([\w-]+)?$/']
     ]);
 
     if ($validator->fails()) {
@@ -33,7 +32,7 @@ final class GoogleBodyValidator
       $content['message']['text'] = 'Missing required fields';
       $content['message']['kind'] = 'error';
 
-      $response = new Response(content: $content, status: 400, headers: ['Content-Type' => 'application/json']);
+      $response = new JsonResponse(data: $content, status: 400);
 
       // @todo[LOG] aplicar log do que foi recebido e do que será enviado
 

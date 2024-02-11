@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Api\Auth\Infra;
+namespace Api\Auth\Infra\Repository;
 
-use Api\Auth\Domain\User;
+use Api\Auth\Domain\Entity\User;
 use Illuminate\Support\Facades\DB;
 
 final class UserRepository

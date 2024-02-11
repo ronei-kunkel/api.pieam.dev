@@ -2,18 +2,18 @@
 
 namespace Api\Auth\Infra\Middleware;
 
-use Api\Auth\Infra\GoogleService;
+use Api\Auth\Infra\Service\GoogleService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 
 final class GoogleJwtValidator
 {
   /**
    * Handle an incoming request.
    *
-   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\JsonResponse)  $next
    */
-  public function handle(Request $request, \Closure $next): Response
+  public function handle(Request $request, \Closure $next): JsonResponse
   {
     $jwt = $request->input('credential');
 
@@ -30,7 +30,7 @@ final class GoogleJwtValidator
       $content['message']['text'] = 'Invalid jwt';
       $content['message']['kind'] = 'error';
 
-      $response = new Response(content: $content, status: 400, headers: ['Content-Type' => 'application/json']);
+      $response = new JsonResponse(data: $content, status: 400);
 
       // @todo[LOG] aplicar log do que foi recebido e do que será enviado
 
