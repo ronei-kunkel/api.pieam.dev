@@ -17,7 +17,7 @@ final class SessionValidation
   {
     $sessionCookie = env('SESSION_COOKIE');
 
-    if (session()->getId() !== $request->cookies->get($sessionCookie)) {
+    if ($request->session()->getId() !== $request->cookies->get($sessionCookie)) {
 
       $content['text'] = 'invalid session';
       $content['kind'] = 'error';
