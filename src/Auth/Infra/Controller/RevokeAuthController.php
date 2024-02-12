@@ -29,8 +29,8 @@ final class RevokeAuthController
     );
 
     return (new JsonResponse())->withCookie($pSessionVerificationCookie)
-    ->withoutCookie(cookie: env('SESSION_COOKIE'), path: '/', domain: '.pieam.dev')
-    ->withoutCookie(cookie: 'p_csrf_token', path: '/', domain: '.pieam.dev')
-    ->withoutCookie(cookie: 'p_csrf_cookie', path: '/', domain: '.pieam.dev');
+      ->withoutCookie(cookie: env('SESSION_COOKIE'), path: '/', domain: '.pieam.dev')
+      ->withoutCookie(cookie: 'p_csrf_token', path: '/', domain: '.pieam.dev')
+      ->withoutCookie(cookie: 'p_csrf_cookie', path: '/', domain: '.pieam.dev');
   }
 }

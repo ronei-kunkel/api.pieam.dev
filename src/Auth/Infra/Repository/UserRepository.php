@@ -14,7 +14,7 @@ final class UserRepository
     try {
       $userData = DB::table('user')->get()->where('google_id', '=', $googleId)->first();
 
-      if(!$userData) {
+      if (!$userData) {
         return null;
       }
 
@@ -24,11 +24,11 @@ final class UserRepository
 
     } catch (\Throwable $e) {
 
-      $this->errors['message']['text'] = 'Cannot find user because internal error';
-      $this->errors['message']['kind'] = 'error';
+      $this->errors['text'] = 'Cannot find user because internal error';
+      $this->errors['kind'] = 'error';
 
-      $this->errors['private']['message'] = $e->getMessage();
-      $this->errors['private']['code']    = $e->getCode();
+      $this->errors['private']['text'] = $e->getMessage();
+      $this->errors['private']['code'] = $e->getCode();
 
       return null;
     }
@@ -46,9 +46,9 @@ final class UserRepository
         'image_url' => $user->getImageUrl(),
       ]);
 
-      if(!$id) {
-        $this->errors['message']['text'] = 'User cannot be registered because internal unknown error. Try again later';
-        $this->errors['message']['kind'] = 'error';
+      if (!$id) {
+        $this->errors['text'] = 'User cannot be registered because internal unknown error. Try again later';
+        $this->errors['kind'] = 'error';
 
         return null;
       }
@@ -57,11 +57,11 @@ final class UserRepository
 
     } catch (\Throwable $e) {
 
-      $this->errors['message']['text'] = 'User cannot be registered because internal error';
-      $this->errors['message']['kind'] = 'error';
+      $this->errors['text'] = 'User cannot be registered because internal error';
+      $this->errors['kind'] = 'error';
 
-      $this->errors['private']['message'] = $e->getMessage();
-      $this->errors['private']['code']    = $e->getCode();
+      $this->errors['private']['text'] = $e->getMessage();
+      $this->errors['private']['code'] = $e->getCode();
 
       return null;
     }
@@ -82,11 +82,11 @@ final class UserRepository
 
     } catch (\Throwable $e) {
 
-      $this->errors['message']['text'] = 'User data cannot updated with most recent data provides by google because internal error. We will try again in next login';
-      $this->errors['message']['kind'] = 'warning';
+      $this->errors['text'] = 'User data cannot updated with most recent data provides by google because internal error. We will try again in next login';
+      $this->errors['kind'] = 'warning';
 
-      $this->errors['private']['message'] = $e->getMessage();
-      $this->errors['private']['code']    = $e->getCode();
+      $this->errors['private']['text'] = $e->getMessage();
+      $this->errors['private']['code'] = $e->getCode();
 
       return false;
     }
@@ -101,7 +101,7 @@ final class UserRepository
   {
     // log of violations
 
-    if(env('APP_DEBUG')) {
+    if (env('APP_DEBUG')) {
       return $this->errors;
     }
 

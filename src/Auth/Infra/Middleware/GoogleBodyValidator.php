@@ -11,12 +11,12 @@ final class GoogleBodyValidator
   /**
    * Handle an incoming request.
    *
-   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\JsonResponse)  $next
+   * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\JsonResponse)  $next
    */
   public function handle(Request $request, \Closure $next): JsonResponse
   {
     $validator = Validator::make($request->all(), [
-      'credential' => ['required','string','regex:/^[\w-]+?\.[\w-]+?\.([\w-]+)?$/']
+      'credential' => ['required', 'string', 'regex:/^[\w-]+?\.[\w-]+?\.([\w-]+)?$/']
     ]);
 
     if ($validator->fails()) {
@@ -29,8 +29,8 @@ final class GoogleBodyValidator
        * 
        * @todo[FRONT] implementar alguma forma de ler essa mensagem desse cookie ou outro lugar caso ela exista
        */
-      $content['message']['text'] = 'Missing required fields';
-      $content['message']['kind'] = 'error';
+      $content['text'] = 'Missing required fields';
+      $content['kind'] = 'error';
 
       $response = new JsonResponse(data: $content, status: 400);
 

@@ -18,9 +18,6 @@ final class GoogleAuthController
   ) {
   }
 
-  /**
-   * @todo[CRYPT] Retornar o p_csrf_cookie(httpOnly) com valor não criptografado e o p_csrf_token(não httpOnly) com o valor criptografado (usando password_hash [entender questão de limite de caracteres dos cookies]). Quando a api receber uma requisição post, faz um password_verify do valor do p_csrf_cookie com a hash que é o valor do p_csrf_token
-   */
   public function __invoke(): JsonResponse
   {
     $input = new GrantAccessInput(
@@ -53,48 +50,11 @@ final class GoogleAuthController
 
     $this->request->session()->put('user', $user);
 
-    // @todo[CSRF] must be other value
-    $csrfCookieValue = (string) time();
-
-    $csrfTokenValue = password_hash($csrfCookieValue, PASSWORD_BCRYPT, ['cost' => 4]);
-
-    /**
-     * Auto send to front in next post requests
-     * Need to bee revalidated in each post request received
-     */
-    $pCsrfCookie = new Cookie(
-      name: 'p_csrf_cookie',
-      httpOnly: true,
-      value: $csrfCookieValue,
-      expire: $tenDaysTime,
-      path: '/',
-      domain: '.pieam.dev',
-      secure: true,
-      sameSite: Cookie::SAMESITE_STRICT,
-    );
-
-    /**
-     * Used to put on hidden input into forms
-     * Need to bee revalidated in each post request received
-     */
-    $pCsrfToken = new Cookie(
-      name: 'p_csrf_token',
-      httpOnly: false,
-      value: $csrfTokenValue,
-      expire: $pCsrfCookie->getExpiresTime(),
-      path: $pCsrfCookie->getPath(),
-      domain: $pCsrfCookie->getDomain(),
-      secure: $pCsrfCookie->isSecure(),
-      sameSite: $pCsrfCookie->getSameSite(),
-    );
-
     /**
      * Used to set the id of user session.
      * User info and session values must be setted here
      * 
      * It is http only, then is auto send into all request by browser
-     * 
-     * @todo[CRYPT] o valor do cookie de sessão deve estart criptografado ao enviar e ao receber nas requests deve ser descriptografado
      */
     $pSessionIdCookie = new Cookie(
       name: env('SESSION_COOKIE'),
@@ -123,13 +83,14 @@ final class GoogleAuthController
       sameSite: Cookie::SAMESITE_STRICT,
     );
 
-    $content['message']['kind'] = 'success';
+    $content['kind']              = 'success';
+    $content['user']['name']      = $user->name;
+    $content['user']['email']     = $user->email;
+    $content['user']['image_url'] = $user->imageUrl;
 
     $response = new JsonResponse($content, 200);
 
     return $response->withCookie($pSessionIdCookie)
-      ->withCookie($pSessionVerificationCookie)
-      ->withCookie($pCsrfCookie)
-      ->withCookie($pCsrfToken);
+      ->withCookie($pSessionVerificationCookie);
   }
 }

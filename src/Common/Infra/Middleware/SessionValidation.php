@@ -4,85 +4,46 @@ namespace Api\Common\Infra\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Cookie;
 
 final class SessionValidation
 {
   /**
    * Handle an incoming request.
    *
-   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\JsonResponse)  $next
+   * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\JsonResponse)  $next
    */
   public function handle(Request $request, \Closure $next): JsonResponse
   {
+    $sessionCookie = env('SESSION_COOKIE');
 
-    
+    if (session()->getId() !== $request->cookies->get($sessionCookie)) {
 
+      $content['text'] = 'invalid session';
+      $content['kind'] = 'error';
 
+      $response = new JsonResponse($content, 401);
 
+      $pSessionVerificationCookie = new Cookie(
+        name: 'p_session_verification',
+        value: '0',
+        expire: 0,
+        path: '/',
+        domain: '.pieam.dev',
+        secure: true,
+        httpOnly: false,
+        sameSite: Cookie::SAMESITE_STRICT,
+      );
 
+      $response->withCookie($pSessionVerificationCookie)
+        ->withoutCookie(cookie: $sessionCookie, path: '/', domain: '.pieam.dev')
+        ->withoutCookie(cookie: 'p_csrf_token', path: '/', domain: '.pieam.dev')
+        ->withoutCookie(cookie: 'p_csrf_cookie', path: '/', domain: '.pieam.dev');
 
+      return $response;
+    }
 
-    // if(!$request->cookies->has('p_csrf_cookie')) {
-    //   /**
-    //    * @todo[FLOW] implementar response com redirect para a home do pieam.dev
-    //    * com algum cookie ou flash message para transportar a mensagem
-    //    * de que houve falha de comunicação do google com o sistema durante o fluxo de login
-    //    * 
-    //    * @todo[FRONT] implementar alguma forma de ler essa mensagem desse cookie ou outro lugar caso ela exista
-    //    */
-    //   $content['message']['text'] = 'Missing CSRF cookie';
-    //   $content['message']['kind'] = 'error';
-
-    //   $response = new JsonResponse($content, 400);
-
-    //   // @todo[LOG] aplicar log do que foi recebido e do que será enviado
-
-    //   return $response;
-    // }
-
-    // if(!$request->input('p_csrf_token')) {
-    //   /**
-    //    * @todo[FLOW] implementar response com redirect para a home do pieam.dev
-    //    * com algum cookie ou flash message para transportar a mensagem
-    //    * de que houve falha de comunicação do google com o sistema durante o fluxo de login
-    //    * 
-    //    * @todo[FRONT] implementar alguma forma de ler essa mensagem desse cookie ou outro lugar caso ela exista
-    //    */
-    //   $content['message']['text'] = 'Missing CSRF token';
-    //   $content['message']['kind'] = 'error';
-
-    //   $response = new JsonResponse($content, 400);
-
-    //   // @todo[LOG] aplicar log do que foi recebido e do que será enviado
-
-    //   return $response;
-    // }
-
-    // $cookie = $request->cookies->get('p_csrf_cookie');
-
-    // $token = $request->input('p_csrf_token');
-
-    // if(password_verify($cookie, $token)) {
-    //   /**
-    //    * @todo[FLOW] implementar response com redirect para a home do pieam.dev
-    //    * com algum cookie ou flash message para transportar a mensagem
-    //    * de que houve falha de comunicação do google com o sistema durante o fluxo de login
-    //    * 
-    //    * @todo[FRONT] implementar alguma forma de ler essa mensagem desse cookie ou outro lugar caso ela exista
-    //    */
-    //   $content['message']['text'] = 'Wrong CSRF token';
-    //   $content['message']['kind'] = 'error';
-
-    //   $response = new JsonResponse($content, 400);
-
-    //   // @todo[LOG] aplicar log do que foi recebido e do que será enviado
-
-    //   return $response;
-    // }
-
-    // Log::error('csrf', ['token'=>$token, 'cookie'=>$cookie]);
-
-    return $next($request);
+    $res = $next($request);
+    return $res;
   }
 }
