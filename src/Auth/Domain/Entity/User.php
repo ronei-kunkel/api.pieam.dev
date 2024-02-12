@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Api\Auth\Domain;
+namespace Api\Auth\Domain\Entity;
 
 final class User
 {

@@ -1,42 +1,23 @@
 <?php
 
-use Api\Auth\Infra\GoogleAuthController;
-use Api\Auth\Infra\Middleware\HasGoogleCsrfCookie;
+use Api\Auth\Infra\Controller\GoogleAuthController;
+use Api\Auth\Infra\Controller\RevokeAuthController;
 use Api\Auth\Infra\Middleware\GoogleBodyValidator;
-use Api\Auth\Infra\Middleware\GoogleCsrfValidator;
 use Api\Auth\Infra\Middleware\GoogleJwtValidator;
-use Api\Auth\Infra\RevokeAuthController;
-use Api\Script\GsiClientController;
+use Api\Common\Infra\Middleware\CsrfRenew;
+use Api\Common\Infra\Middleware\CsrfValidation;
+use Api\Common\Infra\Middleware\SessionValidation;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
 Route::prefix('v1')->group(function () {
 
-    // fixed script of google sign in client to set cookie both on domain and subdomain
-    Route::prefix('gsi')->group(function () {
-        Route::get('client', GsiClientController::class);
+    Route::prefix('auth')->group(function() {
+        Route::post('google', GoogleAuthController::class)->middleware(CsrfRenew::class, GoogleBodyValidator::class, GoogleJwtValidator::class, StartSession::class);
+        Route::delete('', RevokeAuthController::class)->middleware(CsrfValidation::class);
     });
 
-    Route::prefix('auth')->group(function () {
-        Route::post(
-            'google',
-            GoogleAuthController::class
-        )->middleware(
-            HasGoogleCsrfCookie::class,
-            GoogleBodyValidator::class,
-            GoogleCsrfValidator::class,
-            GoogleJwtValidator::class
-        );
-        // Route::post('revoke', RevokeAuthController::class);
-    });
+    Route::get('session', fn() => new JsonResponse())->middleware(SessionValidation::class);
+
 });

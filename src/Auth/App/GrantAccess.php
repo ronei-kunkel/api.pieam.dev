@@ -3,8 +3,8 @@
 namespace Api\Auth\App;
 
 use Api\Auth\App\Service\DataChangeCheckerService;
-use Api\Auth\Domain\User;
-use Api\Auth\Infra\UserRepository;
+use Api\Auth\Domain\Entity\User;
+use Api\Auth\Infra\Repository\UserRepository;
 
 final class GrantAccess
 {
@@ -42,8 +42,8 @@ final class GrantAccess
     }
 
     if(!$this->repository->updateUser($updatedUser)) {
-      $defaultError['message']['text'] = 'An error occours when try to update user with most recent data from google account. We will try again in next login';
-      $defaultError['message']['kind'] = 'warning';
+      $defaultError['text'] = 'An error occours when try to update user with most recent data from google account. We will try again in next login';
+      $defaultError['kind'] = 'warning';
 
       $errors = $this->repository->hasErrors() ? $this->repository->getErrors() : $defaultError;
 
