@@ -21,10 +21,6 @@ final class GoogleJwtValidator
 
     if (!$googleService->validateJwt($jwt)) {
       /**
-       * @todo[FLOW] implementar response com redirect para a home do pieam.dev
-       * com algum cookie ou flash message para transportar a mensagem
-       * de que houve falha de comunicação do google com o sistema durante o fluxo de login
-       * 
        * @todo[FRONT] implementar alguma forma de ler essa mensagem desse cookie ou outro lugar caso ela exista
        */
       $content['text'] = 'Invalid jwt';
