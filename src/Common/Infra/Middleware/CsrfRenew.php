@@ -55,8 +55,6 @@ final class CsrfRenew
       sameSite: $pCsrfCookie->getSameSite(),
     );
 
-    session()->put('_token', $rawValue);
-
     return $response->withCookie($pCsrfCookie)
       ->withCookie($pCsrfToken);
   }
