@@ -18,7 +18,7 @@ final class CsrfValidation
 
     $hashedValue = $request->input('p_csrf_token');
 
-    $sessionRawValue = session()->get('_token');
+    $sessionRawValue = $request->session()->get('_token');
 
     if (!$rawValue) {
       /**
@@ -56,7 +56,7 @@ final class CsrfValidation
       return $response;
     }
 
-    if (sha1($rawValue) === $hashedValue and $rawValue === $sessionRawValue) {
+    if (sha1($rawValue) !== $hashedValue or $rawValue !== $sessionRawValue) {
       /**
        * @todo[FRONT] implementar alguma forma de ler essa mensagem desse cookie ou outro lugar caso ela exista
        */

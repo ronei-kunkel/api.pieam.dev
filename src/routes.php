@@ -15,7 +15,7 @@ Route::prefix('v1')->middleware(StartSession::class)->group(function () {
 
     Route::prefix('auth')->group(function() {
         Route::post('google', GoogleAuthController::class)->middleware(CsrfRenew::class, GoogleBodyValidator::class, GoogleJwtValidator::class);
-        Route::delete('', RevokeAuthController::class)->withoutMiddleware(StartSession::class)->middleware(CsrfValidation::class);
+        Route::delete('', RevokeAuthController::class)->middleware(CsrfValidation::class);
     });
 
     Route::get('session', fn() => new JsonResponse())->middleware(SessionValidation::class);
