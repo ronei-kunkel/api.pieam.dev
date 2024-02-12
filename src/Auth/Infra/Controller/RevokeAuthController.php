@@ -15,7 +15,7 @@ final class RevokeAuthController
 
   public function __invoke(): JsonResponse
   {
-    $this->request->session()->getHandler()->destroy($this->request->cookie(env('SESSION_COOKIE')));
+    session()->getHandler()->destroy($this->request->cookies->get(env('SESSION_COOKIE')));
 
     $pSessionVerificationCookie = new Cookie(
       name: 'p_session_verification',
