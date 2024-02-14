@@ -9,12 +9,15 @@ final class GoogleService
 {
 
   private array $userData = [];
+  private string $clientId;
 
   /**
-   * @todo passar para uma variável de ambiente
    * @todo ver se é possível validar o jwt com algum valor do json do cliente oauth (https://console.cloud.google.com/apis/credentials?hl=pt-BR&project=pieam-410602)
    */
-  private $clientId = '457440635808-66kbe4vui6dgo9katnn1i77481b1agtn.apps.googleusercontent.com';
+  public function __construct()
+  {
+    $this->clientId = env('GOOGLE_CLIENT_ID');
+  }
 
   public function validateJwt(string $jwt): bool
   {

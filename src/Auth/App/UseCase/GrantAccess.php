@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Api\Auth\App;
+namespace Api\Auth\App\UseCase;
 
+use Api\_Common\Domain\Entity\User;
 use Api\Auth\App\Service\DataChangeCheckerService;
-use Api\Auth\Domain\Entity\User;
 use Api\Auth\Infra\Repository\UserRepository;
 
 final class GrantAccess

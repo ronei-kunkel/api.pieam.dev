@@ -2,8 +2,10 @@
 
 namespace Api\Auth\Infra\Controller;
 
-use Api\Auth\App\GrantAccess;
-use Api\Auth\App\GrantAccessInput;
+use Api\_Common\Domain\Entity\Session;
+use Api\_Common\Infra\Repository\SessionRepository;
+use Api\Auth\App\UseCase\GrantAccess;
+use Api\Auth\App\UseCase\GrantAccessInput;
 use Api\Auth\Infra\Service\GoogleService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +16,8 @@ final class GoogleAuthController
   public function __construct(
     private Request $request,
     private GoogleService $googleService,
-    private GrantAccess $grantAccess
+    private GrantAccess $grantAccess,
+    private SessionRepository $sessionRepository
   ) {
   }
 
@@ -37,29 +40,20 @@ final class GoogleAuthController
       return new JsonResponse($output->errors, 422);
     }
 
-    $tenDaysTime = time() + (3600 * 24 * 10); //10 dias em segundos
+    $session = new Session($output->user);
 
-    $user = new \stdClass();
+    $sessionId = $this->sessionRepository->save($session);
 
-    $user->id       = $output->user->getId();
-    $user->googleId = $output->user->getGoogleId();
-    $user->email    = $output->user->getEmail();
-    $user->name     = $output->user->getName();
-    $user->lastName = $output->user->getLastName();
-    $user->imageUrl = $output->user->getImageUrl();
+    if(!$sessionId) {
+      return new JsonResponse(status: 500);
+    }
 
-    $this->request->session()->put('user', $user);
+    $sessionCookie = env('SESSION_COOKIE');
 
-    /**
-     * Used to set the id of user session.
-     * User info and session values must be setted here
-     * 
-     * It is http only, then is auto send into all request by browser
-     */
     $pSessionIdCookie = new Cookie(
-      name: env('SESSION_COOKIE'),
-      value: $this->request->session()->getId(),
-      expire: $tenDaysTime,
+      name: $sessionCookie,
+      value: $sessionId,
+      expire: time() + (3600 * 24 * 10),
       path: '/',
       domain: '.pieam.dev',
       secure: true,
@@ -67,15 +61,10 @@ final class GoogleAuthController
       sameSite: Cookie::SAMESITE_STRICT,
     );
 
-    /**
-     * Used to validate if have session.
-     * 
-     * As the sesseion id is http only, this cookie are used to verify in front if session are defined
-     */
     $pSessionVerificationCookie = new Cookie(
       name: 'p_session_verification',
       value: '1',
-      expire: 0,
+      expire: time() + (3600 * 24 * 10),
       path: '/',
       domain: '.pieam.dev',
       secure: true,
@@ -83,14 +72,7 @@ final class GoogleAuthController
       sameSite: Cookie::SAMESITE_STRICT,
     );
 
-    $content['kind']              = 'success';
-    $content['user']['name']      = $user->name;
-    $content['user']['email']     = $user->email;
-    $content['user']['image_url'] = $user->imageUrl;
-
-    $response = new JsonResponse($content, 200);
-
-    return $response->withCookie($pSessionIdCookie)
-      ->withCookie($pSessionVerificationCookie);
+    return (new JsonResponse())->withCookie($pSessionIdCookie)
+    ->withCookie($pSessionVerificationCookie);
   }
 }

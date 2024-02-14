@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Api\Auth\App;
+namespace Api\Auth\App\UseCase;
 
 final readonly class GrantAccessInput
 {

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Api\Auth\App;
+namespace Api\Auth\App\UseCase;
 
-use Api\Auth\Domain\Entity\User;
+use Api\_Common\Domain\Entity\User;
 
 final readonly class GrantAccessOutput
 {
