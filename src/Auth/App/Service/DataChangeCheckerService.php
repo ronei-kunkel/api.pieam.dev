@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
 namespace Api\Auth\App\Service;
-use Api\Auth\App\GrantAccessInput;
-use Api\Auth\Domain\Entity\User;
+
+use Api\Auth\App\UseCase\GrantAccessInput;
+use Api\_Common\Domain\Entity\User;
 
 final class DataChangeCheckerService
 {

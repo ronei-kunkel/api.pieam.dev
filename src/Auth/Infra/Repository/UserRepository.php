@@ -2,7 +2,7 @@
 
 namespace Api\Auth\Infra\Repository;
 
-use Api\Auth\Domain\Entity\User;
+use Api\_Common\Domain\Entity\User;
 use Illuminate\Support\Facades\DB;
 
 final class UserRepository

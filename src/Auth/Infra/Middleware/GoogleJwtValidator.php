@@ -26,7 +26,7 @@ final class GoogleJwtValidator
       $content['text'] = 'Invalid jwt';
       $content['kind'] = 'error';
 
-      $response = new JsonResponse(data: $content, status: 400);
+      $response = new JsonResponse($content, 400);
 
       // @todo[LOG] aplicar log do que foi recebido e do que será enviado
 

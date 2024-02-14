@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Api\Common\Infra\Middleware;
+namespace Api\_Common\Infra\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;

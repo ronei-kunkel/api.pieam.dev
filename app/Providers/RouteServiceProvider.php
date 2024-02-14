@@ -11,15 +11,6 @@ use Illuminate\Support\Facades\Route;
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The path to your application's "home" route.
-     *
-     * Typically, users are redirected here after authentication.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
-
-    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
@@ -29,8 +20,11 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            Route::middleware('api')
-                ->group(base_path('src/routes.php'));
+            Route::middleware('api')->prefix('v1')
+                ->group(base_path('routes/v1.php'));
+
+            // Route::middleware('api')->prefix('v2')
+            //     ->group(base_path('routes/v2.php'));
         });
     }
 }
